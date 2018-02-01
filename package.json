@@ -1,0 +1,24 @@
+{
+  "name": "node-chat",
+  "version": "1.0.0",
+  "description": "- simple chat using node.js(websocket)\r - test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "websocket": "^1.0.25"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tMasaaa/node-chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tMasaaa/node-chat/issues"
+  },
+  "homepage": "https://github.com/tMasaaa/node-chat#readme"
+}

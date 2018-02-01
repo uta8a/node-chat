@@ -1,0 +1,101 @@
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Noto Sans'), local('Noto Sans CJK JP'), local('NotoSansJP-Regular.otf'), url('https://cdn.glitch.com/32bc6b82-779c-40c0-9dc1-0a65566c4100%2FNotoSansCJKjp-Regular.woff2?1516990299387') format('woff2');
+}
+
+* {
+  letter-spacing: .025rem;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
+  font-family: 'Supermercado One', cursive;
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+input {
+  border: 5px solid #dee7ec;
+  outline: 0;
+}
+
+.input {
+  top: 0;
+  text-align: center;
+}
+
+form {
+  text-align: inherit;
+}
+
+.main-container {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  /* border: solid; */
+  overflow-y: auto;
+}
+
+.chat-message {
+  text-align: center;
+  font-size: 2rem;
+}
+
+.icon {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background: url(https://cdn.glitch.com/519349ee-69f9-46d8-a611-8e57c2e46c26%2Ficonface.png?1517440675586);
+  border-radius: 50%;
+  border: 1px solid pink;
+}
+
+.main {
+  position: relative;
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.message-name {
+  color: #9E9E9E;
+  font-size: .9rem;
+  margin-bottom: 4px;
+}
+
+.message-text {
+  font-family: 'Noto Sans JP';
+  border-radius: 12px;
+  background-color: #ECEFF1;
+  padding: 5px 13px;
+  display: inline-block;
+  max-width: 200px;
+  outline: 0;
+}
+
+.message-text:after {
+  border-right: 24px solid #ECEFF1;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  left: -11px;
+  top: 20px;
+  content: "";
+  position: absolute;
+  transform: rotate(20deg);
+}
+
+.message-time {
+  color: #B0BEC5;
+  font-size: .7rem;
+  margin: 0 5px;
+}
