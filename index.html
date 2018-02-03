@@ -28,9 +28,9 @@
   </div>
 
   <div class="input">
-    <span class="main">
+    <span class="input-main">
       <span class="main-text" contenteditable="true"><p><br></p></span>
-    <span class="main-emoji"></span>
+      <span class="main-emoji"></span>
     </span>
     <span class="input-send"></span>
   </div>
@@ -41,28 +41,47 @@
   // const ws = new WebSocket('wss://node-chat-tmasaaa.glitch.me');
 
   // chat text-message
-  const text_input = document.querySelector('.main-text');
-  text_input.addEventListener('keydown', e => {
+  const main_text = document.querySelector('.main-text');
+  main_text.addEventListener('keydown', e => {
     if (e.key === 'Backspace') {
-      if (text_input.innerHTML === '<p><br></p>') {
+      // input部分のデザインのため
+      if (main_text.innerHTML === '<p><br></p>') {
         e.preventDefault();
       }
     }
+    if(e.ctrlKey && e.key === 'Enter') {
+      post();
+    }
   });
 
-  const main_text = document.querySelector('.main-text');
-  // IP識別して、IPごとにID割り振ろう？
-  const userID = Math.random().toString(36).slice(-4);
+  const ID = Math.random().toString(36).slice(-4);
   // post
-  const post = () => {
-    const message = main_text.innerHTML;
-    const val = {
-      id: userID,
-      color: '',
-      msg: message
+  const randomColor = () => {
+    const R = () => {
+      const B = 215;
+      return ~~(Math.random() * (255 - B)) + B;
     };
-    ws.send(JSON.stringify(val));
-    main_text.innerText = '';
+    return `rgb(${R()},${R()},${R()})`;
+  };
+  let COLOR = randomColor();
+  const post = () => {
+    //input部分のデザインのためのとこが、送信時にうまくいくようにする
+    if(main_text.innerHTML !== '<p><br><p>') {
+      let MSG = "";
+      nodeP = main_text.querySelectorAll('p');
+      for(i=0; i < nodeP.length; i++) {
+        MSG += nodeP.item(i).innerText;
+      }
+      main_text.innerHTML = '<p><br><p>';
+      const DT = new Date();
+      const val = {
+        id: ID,
+        color: COLOR,
+        time: `${DT.getHours()}:${DT.getMinutes()}`,
+        msg: MSG.replace(/</g, '&lt;')
+      };
+      ws.send(JSON.stringify(val));
+    }
   };
   // send button post
   document.querySelector('.input-send').addEventListener('click', e => {

@@ -28,7 +28,7 @@ header {
   position: relative;
 }
 
-.main {
+.input-main {
   display: inline-block;
   background-color: #f6f6f6;
   border: .5px solid #e9ebee;
@@ -44,7 +44,7 @@ header {
   margin: 0 0 0 3px;
 }
 
-.main-text>p {
+.main-text > p {
   margin: 0 0 0 7px;
   min-height: 24px;
   line-height: 24px;
@@ -58,15 +58,17 @@ header {
   height: 20px;
   right: 2px;
   bottom: 2px;
+
+  /* position: relative; */
 }
 
 .input-send {
   display: inline-block;
   content: url(https://cdn.glitch.com/519349ee-69f9-46d8-a611-8e57c2e46c26%2Fsd.svg?1517393832617);
-  position: relative;
+  position: absolute;
   width: 17px;
   height: 17px;
-  left: -13px;
+  left: 205px;
   top: 3px;
 }
 
