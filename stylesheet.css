@@ -9,6 +9,11 @@
   letter-spacing: .025rem;
 }
 
+html {
+  height: 100%;
+  background-color: #FFFFCC;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -21,11 +26,19 @@ body {
 header {
   font-family: 'Supermercado One', cursive;
   font-size: 3rem;
+  max-height: 100px;
+  margin-bottom: 20px;
 }
 
 /* input部分 */
+
 .input {
-  position: relative;
+  display: flex;
+  align-items: baseline;
+  bottom: 10px;
+  transform: scale(1.25);
+  position: sticky;
+  margin-top: 10px;
 }
 
 .input-main {
@@ -33,7 +46,6 @@ header {
   background-color: #f6f6f6;
   border: .5px solid #e9ebee;
   border-radius: 15px;
-  position: relative;
   width: 200px;
 }
 
@@ -44,7 +56,7 @@ header {
   margin: 0 0 0 3px;
 }
 
-.main-text > p {
+.main-text>p {
   margin: 0 0 0 7px;
   min-height: 24px;
   line-height: 24px;
@@ -58,8 +70,6 @@ header {
   height: 20px;
   right: 2px;
   bottom: 2px;
-
-  /* position: relative; */
 }
 
 .input-send {
@@ -73,6 +83,7 @@ header {
 }
 
 /* message wrap */
+
 .main-container {
   display: block;
   width: 100%;
@@ -80,13 +91,17 @@ header {
   height: 100%;
   max-height: 500px;
   overflow-y: auto;
+  background-color: #AED581;
 }
 
 /* message部分 */
+
+/* .messageのflexでicon位置改善した */
+
 .message {
   margin: 10px;
   display: flex;
-  width: calc(100% - 25px);
+  width: calc(100% - 20px);
 }
 
 .message-icon {
@@ -100,35 +115,94 @@ header {
 .message-main {
   display: inline-block;
   margin: 0 10px;
+  width: calc(100% - 50px - 20px);
 }
 
 .mm-name {
-  color: #9E9E9E;
-  font-size: .9rem;
+  color: white;
+  margin: 3px 0;
 }
 
 .mm-text {
-  border-radius: 12px;
-  background-color: #ECEFF1;
-  padding: 5px 13px;
+  background: #e3e8ec;
+  border-radius: 10px;
+  padding: 5px 10px;
+  position: relative;
+  left: 10px;
   display: inline-block;
-  max-width: 200px;
-  outline: 0;
+  width: calc(100% - 10px - 75px);
+  word-wrap: break-word;
 }
 
-.mm-text:after {
-  border-right: 24px solid #ECEFF1;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  left: -11px;
-  top: 20px;
-  content: "";
+.mm-text::before {
+  content: url(https://cdn.glitch.com/519349ee-69f9-46d8-a611-8e57c2e46c26%2Ff.svg?1517635094118);
+  /*    display: inline-block;*/
+  width: 20px;
   position: absolute;
-  transform: rotate(20deg);
+  left: -10px;
 }
 
 .mm-time {
-  color: #B0BEC5;
+  color: white;
   font-size: .7rem;
-  margin: 0 5px;
+  margin-left: 10px;
+  position: relative;
+  top: 5px;
+}
+
+/* my message */
+
+.m-message {
+  margin: 10px;
+  display: flex;
+  width: calc(100% - 20px);
+}
+
+.m-message-icon {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  text-align: right;
+  background: url(https://cdn.glitch.com/519349ee-69f9-46d8-a611-8e57c2e46c26%2Ficonface.png?1517440675586);
+  border-radius: 50%;
+}
+
+.m-message-main {
+  display: inline-block;
+  text-align: left;
+  margin: 0 10px;
+  width: calc(100% - 50px - 20px);
+}
+
+.m-mm-name {
+  color: white;
+  margin: 3px 0;
+  text-align: right;
+}
+
+.m-mm-text {
+  background: #B2EBF2;
+  border-radius: 10px;
+  padding: 5px 10px;
+  position: relative;
+  right: -10px;
+  display: inline-block;
+  width: calc(100% - 10px - 75px);
+  word-wrap: break-word;
+}
+
+.m-mm-text::before {
+  content: url(https://cdn.glitch.com/519349ee-69f9-46d8-a611-8e57c2e46c26%2Ffb.svg?1517732189251);
+  width: 20px;
+  position: absolute;
+  right: -10px;
+  transform: scale(-1, 1);
+}
+
+.m-mm-time {
+  color: white;
+  font-size: .7rem;
+  margin-left: 10px;
+  position: relative;
+  top: 5px;
 }

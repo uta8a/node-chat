@@ -13,24 +13,34 @@
   <header>
     <p>chat</p>
   </header>
+
   <div class="main-container">
     <template id="chat-template">
       <div class="message">
         <div class="message-icon"></div>
         <div class="message-main">
           <div class="mm-name">てすとまん</div>
-          <span class="mm-text" contenteditable="true">うあああーーああああああああああああああああああああああ</span>
+          <span class="mm-text">うあああーーああああああああああああああああああああああ</span>
           <span class="mm-time">18:35</span>
         </div>
       </div>
-      <br>
+    </template>
+    <template id="m-chat-template">
+      <div class="m-message">
+        <div class="m-message-main">
+          <div class="m-mm-name">てすとまん</div>
+          <span class="m-mm-time">18:35</span>
+          <span class="m-mm-text">うあああーーあああああああああああああうひょうひょ</span>
+        </div>
+        <div class="m-message-icon"></div>
+      </div>
     </template>
   </div>
 
   <div class="input">
     <span class="input-main">
       <span class="main-text" contenteditable="true"><p><br></p></span>
-      <span class="main-emoji"></span>
+    <span class="main-emoji"></span>
     </span>
     <span class="input-send"></span>
   </div>
@@ -42,6 +52,7 @@
 
   // chat text-message
   const main_text = document.querySelector('.main-text');
+  const input = document.querySelector('.input');
   main_text.addEventListener('keydown', e => {
     if (e.key === 'Backspace') {
       // input部分のデザインのため
@@ -49,12 +60,12 @@
         e.preventDefault();
       }
     }
-    if(e.ctrlKey && e.key === 'Enter') {
+    if (e.ctrlKey && e.key === 'Enter') {
       post();
     }
   });
 
-  const ID = Math.random().toString(36).slice(-4);
+  const ID = localStorage.getItem('ID') || Math.random().toString(36).slice(-4);
   // post
   const randomColor = () => {
     const R = () => {
@@ -66,13 +77,18 @@
   let COLOR = randomColor();
   const post = () => {
     //input部分のデザインのためのとこが、送信時にうまくいくようにする
-    if(main_text.innerHTML !== '<p><br><p>') {
+    if (main_text.innerHTML !== '<p><br></p>') {
       let MSG = "";
       nodeP = main_text.querySelectorAll('p');
-      for(i=0; i < nodeP.length; i++) {
-        MSG += nodeP.item(i).innerText;
+      for (i = 0; i < nodeP.length; i++) {
+        MSG += '\n' + nodeP.item(i).innerText;
       }
-      main_text.innerHTML = '<p><br><p>';
+      MSG = MSG.replace('\n', '');
+      main_text.innerHTML = '<p><br></p>';
+      if (MSG.split(' ')[0] === '/id') {
+        ID = MSG.split(' ')[1];
+        localStorage.setItem('ID', ID);
+      }
       const DT = new Date();
       const val = {
         id: ID,
@@ -81,6 +97,7 @@
         msg: MSG.replace(/</g, '&lt;')
       };
       ws.send(JSON.stringify(val));
+      input.value = '';
     }
   };
   // send button post
@@ -89,23 +106,45 @@
   });
 
   ws.onopen = e => {
-    // msgInput.focus();
+    input.focus();
   };
 
+  window.addEventListener('beforeunload', e => {
+    const DT = new Date();
+    const val = {
+      id: ID,
+      color: COLOR,
+      time: `${DT.getHours()}:${DT.getMinutes()}`,
+      msg: '退出しました'
+    };
+    ws.send(JSON.stringify(val));
+  });
+
   ws.onmessage = e => {
-    const T = document.querySelector('#chat-template').content;
     let MSG = JSON.parse(e.data);
-    let ID = JSON.parse(e.data).id;
     const D = new Date();
-
-    T.querySelector('.mm-text').innerHTML = MSG.msg;
-    T.querySelector('.mm-name').innerText = MSG.id;
-    T.querySelector('.mm-time').innerText = `${D.getHours()}:${D.getMinutes()}`;
-    const CLONE = document.importNode(T, true);
-    document.querySelector('.main-container').appendChild(CLONE);
-    console.log(MSG);
-
-    scrollTo(0, document.body.scrollHeight);
+    MSG.msg = MSG.msg.replace(/\n/g, '<br>');
+    if (MSG.id === ID) {
+      const T = document.querySelector('#m-chat-template').content;
+      console.log(ID);
+      T.querySelector('.m-mm-text').innerHTML = MSG.msg;
+      T.querySelector('.m-mm-name').innerText = MSG.id;
+      T.querySelector('.m-mm-time').innerText = `${D.getHours()}:${D.getMinutes()}`;
+      const CLONE = document.importNode(T, true);
+      document.querySelector('.main-container').appendChild(CLONE);
+      console.log(MSG);
+      console.log(main_text.innerHTML);
+    } else {
+      const T = document.querySelector('#chat-template').content;
+      T.querySelector('.mm-text').innerHTML = MSG.msg;
+      T.querySelector('.mm-name').innerText = MSG.id;
+      T.querySelector('.mm-time').innerText = `${D.getHours()}:${D.getMinutes()}`;
+      const CLONE = document.importNode(T, true);
+      document.querySelector('.main-container').appendChild(CLONE);
+      console.log(MSG);
+      console.log(main_text.innerHTML);
+    }
+    document.querySelector('.main-container').scrollTo(0, document.querySelector('.main-container').scrollHeight);
   };
 </script>
 
