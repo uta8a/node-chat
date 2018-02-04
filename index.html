@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0">
   <meta charset="utf-8">
   <title>chat room</title>
   <link href="https://fonts.googleapis.com/css?family=Supermercado+One" rel="stylesheet">
@@ -12,74 +13,139 @@
   <header>
     <p>chat</p>
   </header>
-  <div class="input">
-    <form action="javascript:post();" method="post" name="F">
-      <input name="text" class="msg-input" type="textarea" required>
-      <input type="submit" value="GO">
-    </form>
-  </div>
+
   <div class="main-container">
     <template id="chat-template">
-      <div class="content">
-        <div class="message">
-          <div class="icon"></div>
-          <div class="main">
-            <div class="message-name">test man</div>
-            <span class="message-text"></span>
-            <span class="message-time">18:35</span>
-          </div>
+      <div class="message">
+        <div class="message-icon"></div>
+        <div class="message-main">
+          <div class="mm-name">てすとまん</div>
+          <span class="mm-text">うあああーーああああああああああああああああああああああ</span>
+          <span class="mm-time">18:35</span>
         </div>
       </div>
-      <br>
     </template>
+    <template id="m-chat-template">
+      <div class="m-message">
+        <div class="m-message-main">
+          <div class="m-mm-name">てすとまん</div>
+          <span class="m-mm-time">18:35</span>
+          <span class="m-mm-text">うあああーーあああああああああああああうひょうひょ</span>
+        </div>
+        <div class="m-message-icon"></div>
+      </div>
+    </template>
+  </div>
+
+  <div class="input">
+    <span class="input-main">
+      <span class="main-text" contenteditable="true"><p><br></p></span>
+    <span class="main-emoji"></span>
+    </span>
+    <span class="input-send"></span>
   </div>
 </body>
 
 <script>
-const ws = new WebSocket('ws://localhost:8080/');
-// const ws = new WebSocket('wss://node-chat-tmasaaa.glitch.me');
+  const ws = new WebSocket('ws://localhost:8080/');
+  // const ws = new WebSocket('wss://node-chat-tmasaaa.glitch.me');
 
-  const msgInput = document.querySelector('.msg-input');
-  // IP識別して、IPごとにID割り振ろう？
-  const userID = Math.random().toString(36).slice(-4);
-  // post
-  const post = () => {
-    const message = document.forms.F.text.value;
-    const val = {
-      id: userID,
-      color: '',
-      msg: message
-    };
-    ws.send(JSON.stringify(val));
-    msgInput.value = '';
-  };
-  // Enter key post
-  msgInput.addEventListener('keypress', e => {
-    if (e.keyCode === 13 && msgInput.value !== '') {
+  // chat text-message
+  const main_text = document.querySelector('.main-text');
+  const input = document.querySelector('.input');
+  main_text.addEventListener('keydown', e => {
+    if (e.key === 'Backspace') {
+      // input部分のデザインのため
+      if (main_text.innerHTML === '<p><br></p>') {
+        e.preventDefault();
+      }
+    }
+    if (e.ctrlKey && e.key === 'Enter') {
       post();
     }
   });
 
-  ws.onopen = e => {
-    msgInput.focus();
+  const ID = localStorage.getItem('ID') || Math.random().toString(36).slice(-4);
+  // post
+  const randomColor = () => {
+    const R = () => {
+      const B = 215;
+      return ~~(Math.random() * (255 - B)) + B;
+    };
+    return `rgb(${R()},${R()},${R()})`;
   };
+  let COLOR = randomColor();
+  const post = () => {
+    //input部分のデザインのためのとこが、送信時にうまくいくようにする
+    if (main_text.innerHTML !== '<p><br></p>') {
+      let MSG = "";
+      nodeP = main_text.querySelectorAll('p');
+      for (i = 0; i < nodeP.length; i++) {
+        MSG += '\n' + nodeP.item(i).innerText;
+      }
+      MSG = MSG.replace('\n', '');
+      main_text.innerHTML = '<p><br></p>';
+      if (MSG.split(' ')[0] === '/id') {
+        ID = MSG.split(' ')[1];
+        localStorage.setItem('ID', ID);
+      }
+      const DT = new Date();
+      const val = {
+        id: ID,
+        color: COLOR,
+        time: `${DT.getHours()}:${DT.getMinutes()}`,
+        msg: MSG.replace(/</g, '&lt;')
+      };
+      ws.send(JSON.stringify(val));
+      input.value = '';
+    }
+  };
+  // send button post
+  document.querySelector('.input-send').addEventListener('click', e => {
+    post();
+  });
+
+  ws.onopen = e => {
+    input.focus();
+  };
+
+  window.addEventListener('beforeunload', e => {
+    const DT = new Date();
+    const val = {
+      id: ID,
+      color: COLOR,
+      time: `${DT.getHours()}:${DT.getMinutes()}`,
+      msg: '退出しました'
+    };
+    ws.send(JSON.stringify(val));
+  });
 
   ws.onmessage = e => {
-    const T = document.querySelector('#chat-template').content;
     let MSG = JSON.parse(e.data);
-    let ID = JSON.parse(e.data).id;
     const D = new Date();
-
-    T.querySelector('.message-text').innerText = MSG.msg;
-    T.querySelector('.message-name').innerText = MSG.id;
-    T.querySelector('.message-time').innerText = `${D.getHours()}:${D.getMinutes()}`;
-    const CLONE = document.importNode(T, true);
-    document.querySelector('.main-container').appendChild(CLONE);
-    console.log(MSG);
-
-    scrollTo(0, document.body.scrollHeight);
+    MSG.msg = MSG.msg.replace(/\n/g, '<br>');
+    if (MSG.id === ID) {
+      const T = document.querySelector('#m-chat-template').content;
+      console.log(ID);
+      T.querySelector('.m-mm-text').innerHTML = MSG.msg;
+      T.querySelector('.m-mm-name').innerText = MSG.id;
+      T.querySelector('.m-mm-time').innerText = `${D.getHours()}:${D.getMinutes()}`;
+      const CLONE = document.importNode(T, true);
+      document.querySelector('.main-container').appendChild(CLONE);
+      console.log(MSG);
+      console.log(main_text.innerHTML);
+    } else {
+      const T = document.querySelector('#chat-template').content;
+      T.querySelector('.mm-text').innerHTML = MSG.msg;
+      T.querySelector('.mm-name').innerText = MSG.id;
+      T.querySelector('.mm-time').innerText = `${D.getHours()}:${D.getMinutes()}`;
+      const CLONE = document.importNode(T, true);
+      document.querySelector('.main-container').appendChild(CLONE);
+      console.log(MSG);
+      console.log(main_text.innerHTML);
+    }
+    document.querySelector('.main-container').scrollTo(0, document.querySelector('.main-container').scrollHeight);
   };
-
 </script>
 
 </html>

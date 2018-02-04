@@ -2,6 +2,8 @@
 
 - simple chat using node.js(websocket)
 - [demo](https://node-chat-tmasaaa.glitch.me/)
+
+
 ## TODO
 JS
 - [ ] Hyperlink
@@ -11,8 +13,4 @@ JS
 - [ ] join,left
 
 
-HTML CSS
-- [ ] template design
-
-
-![image](./_img/img6.JPG)
+![image](./_img/img.JPG)
